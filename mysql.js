@@ -1,7 +1,7 @@
 module.exports = (db) => ({
     async getItems(resource) {
         return new Promise((res,rej) => {
-            db.query("SELECT * FROM ??", [resource], (error, result) => {
+            db.query("SELECT id, title FROM ??", [resource], (error, result) => {
                 if(error) {
                     rej(error);
                 }
@@ -25,9 +25,25 @@ module.exports = (db) => ({
                 if(error) {
                     rej(error);
                 }
-                data.id = result.insertId;
-                res(data);
+                res(result);
             });
         })
     },
+    updateItem(resource, data, id) {
+        return new Promise((res,rej) => {
+            db.query("UPDATE ?? SET ? WHERE id = ?", [resource, data, id], (error, result) => {
+                if(error) {
+                    rej(error);
+                }
+                res(result);
+            });
+        })
+    },
+    deleteItem(resource,id) {
+        db.query("DELETE FROM ?? WHERE id = ?", [resource, id], (error) => {
+            if(error) {
+                return error;
+            }
+        });
+    }
 });
